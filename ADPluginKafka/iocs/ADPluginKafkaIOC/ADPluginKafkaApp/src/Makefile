@@ -16,14 +16,14 @@ PROD_IOC = $(PROD_NAME)
 # <name>.dbd will be created from <name>Include.dbd
 DBD += $(PROD_NAME).dbd
 $(PROD_NAME)_DBD += ADPluginKafka.dbd
-$(PROD_NAME)_DBD += simDetectorSupport.dbd
+$(PROD_NAME)_DBD += URLDriverSupport.dbd
 
 # <name>_registerRecordDeviceDriver.cpp will be created from <name>.dbd
 PROD_SRCS_DEFAULT += $(PROD_NAME)_registerRecordDeviceDriver.cpp $(PROD_NAME)Main.cpp
 PROD_SRCS_vxWorks += $(PROD_NAME)_registerRecordDeviceDriver.cpp
 
 PROD_LIBS += ADPluginKafka
-PROD_LIBS += simDetector
+PROD_LIBS += URLDriver
 SYS_LIBS += rdkafka++
 SYS_LIBS += rdkafka
 PROD_LIBS_WIN32 += ssleay32 libeay32
