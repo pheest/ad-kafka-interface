@@ -10,7 +10,6 @@ INC += KafkaProducer.h
 INC += ParamUtility.h
 INC += json.h
 INC += NDArray_schema_generated.h
-INC += flatbuffers.h
 LIBRARY_IOC += ADPluginKafka
 LIB_SRCS += KafkaPlugin.cpp
 LIB_SRCS += KafkaProducer.cpp
