@@ -6,5 +6,5 @@ ADPLUGINKAFKA = $(TOP)/../..
 SIMDET = /opt/epics/modules/areaDetector/ADSimDetector
 
 -include $(TOP)/../../../configure/RELEASE_PRODS_INCLUDE
--include $(TOP)/RELEASE.local
+-include $(TOP)/../../../../RELEASE.local
 -include $(TOP)/configure/RELEASE.local
