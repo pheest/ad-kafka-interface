@@ -34,5 +34,5 @@ include $(TOP)/configure/RULES
 #  ADD EXTRA GNUMAKE RULES BELOW HERE
 
 
-$(COMMON_DIR)/NDArray_schema_generated.h : ../NDArray_schema.fbs $flatbuffers.h
+$(COMMON_DIR)/NDArray_schema_generated.h : ../NDArray_schema.fbs flatbuffers.h
 	flatc --cpp -o $(COMMON_DIR)/ $<
