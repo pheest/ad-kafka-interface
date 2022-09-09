@@ -2,8 +2,8 @@
 # Run "gnumake clean uninstall install" in the application
 # top directory each time this file is changed.
 
-AD_KAFKA_INTERFACE = $(TOP)/../../..
+ADPLUGINKAFKA = $(TOP)/../..
 
 -include $(TOP)/../../../configure/RELEASE_PRODS_INCLUDE
 -include $(TOP)/../../../../RELEASE.local
--include $(AD_KAFKA_INTERFACE)/configure/RELEASE.local
+-include $(TOP)/../../../configure/RELEASE.local

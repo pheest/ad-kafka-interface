@@ -18,7 +18,7 @@ LIB_SRCS += jsoncpp.cpp
 
 DBD += ADKafka.dbd
 
-SYS_LIBS += rdkafka++ rdkafka
+LIB_LIBS += rdkafka++ rdkafka
 
 USR_CXXFLAGS_Linux += -std=c++11
 USR_CXXFLAGS += -I${AREA_DETECTOR}/ADCore/include

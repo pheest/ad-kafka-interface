@@ -1,4 +1,4 @@
-MODULES=sncseq sscan calc asyn autosave busy area_Detector ADSupport ADCore ADURL
+MODULES=sncseq sscan calc asyn autosave busy area_Detector ADSupport ADCore ADURL librdkafka
 
 BASE=R7.0.6.1
 SNCSEQ=R2-2-9
@@ -25,3 +25,7 @@ ADURL=master
 ADURL_REPOURL=https://github.com/pheest/ADURL
 ADURL_RECURSIVE=NO
 ADURL_HOOK=.ci-local/adurl_hook.sh
+LIBRDKAFKA=master
+LIBRDKAFKA_REPOURL=https://github.com/edenhill/librdkafka
+LIBRDKAFKA_RECURSIVE=NO
+
