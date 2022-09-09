@@ -14,20 +14,12 @@ set -e
 if [ -z "$EPICS_HOST_ARCH" ]; then
     EPICS_HOST_ARCH=linux-x86_64
 fi
-apt-get install -y libx11-dev libxext-dev
-
 # The directory above
 SUPPORT="$(dirname "${PWD}")"
 
 # This won't have been set yet on the ADSupport pass.
-ADSUPPORT=$PWD
+ADURL=$PWD
 
 # This file will have been written by ci-scripts cue.py
-source $SUPPORT/RELEASE.local
-
-# Hack RELEASE_LIBS.local file
-sed -i -e "/^ADSUPPORT\s*=/ s,=.*,=$ADSUPPORT," $AREA_DETECTOR/configure/RELEASE_LIBS.local
-
-# Hack RELEASE_PRODS.local file
-sed -i -e "/^ADSUPPORT\s*=/ s,=.*,=$ADSUPPORT," $AREA_DETECTOR/configure/RELEASE_PRODS.local
+cp $SUPPORT/RELEASE.local $ADURL/configure/RELEASE.local
 
