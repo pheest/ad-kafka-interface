@@ -418,6 +418,7 @@ protected:
       PV_param("KAFKA_CONNECTION_STATUS", asynParamInt32),  // con_status
       PV_param("KAFKA_CONNECTION_MESSAGE", asynParamOctet), // con_msg
       PV_param("KAFKA_CURRENT_OFFSET", asynParamInt32),     // msg_offset
+      PV_param("KAFKA_MSG_BUFFER_SIZE", asynParamInt32),    // msg_buffer_size
   };
 };
 } // namespace KafkaInterface

@@ -6,13 +6,26 @@
  */
 
 #include "NDArraySerializer.h"
+#include "TimeUtility.h"
 #include <cassert>
 #include <ciso646>
+#include <cstdint>
 #include <memory>
 #include <vector>
 
-NDArraySerializer::NDArraySerializer(const flatbuffers::uoffset_t bufferSize)
-    : builder(bufferSize) {}
+NDArraySerializer::NDArraySerializer(std::string SourceName,
+                                     const flatbuffers::uoffset_t bufferSize)
+    : SourceName(SourceName), builder(bufferSize) {}
+
+bool NDArraySerializer::setSourceName(std::string NewSourceName) {
+  if (NewSourceName.empty()) {
+    return false;
+  }
+  SourceName = std::move(NewSourceName);
+  return true;
+}
+
+std::string NDArraySerializer::getSourceName() { return SourceName; }
 
 void NDArraySerializer::SerializeData(NDArray &pArray,
                                       unsigned char *&bufferPtr,
@@ -23,8 +36,8 @@ void NDArraySerializer::SerializeData(NDArray &pArray,
   // Required to not have a memory leak
   builder.Clear();
 
-  auto epics_ts = FB_Tables::epicsTimeStamp(pArray.epicsTS.secPastEpoch,
-                                            pArray.epicsTS.nsec);
+  auto SourceNamePtr = builder.CreateString(SourceName);
+
   std::vector<std::uint64_t> tempDims;
   for (size_t y = 0; y < pArray.ndims; y++) {
     tempDims.push_back(pArray.dims[y].size);
@@ -38,7 +51,7 @@ void NDArraySerializer::SerializeData(NDArray &pArray,
   std::memcpy(tempPtr, pArray.pData, ndInfo.totalBytes);
 
   // Get all attributes of this data package
-  std::vector<flatbuffers::Offset<FB_Tables::NDAttribute>> attrVec;
+  std::vector<flatbuffers::Offset<Attribute>> attrVec;
 
   // When passing NULL, get first element
   NDAttribute *attr_ptr = pArray.pAttributeList->next(nullptr);
@@ -60,9 +73,8 @@ void NDArraySerializer::SerializeData(NDArray &pArray,
       auto attrValuePayload = builder.CreateVector(
           reinterpret_cast<unsigned char *>(attrValueBuffer.get()), bytes);
 
-      auto attr = FB_Tables::CreateNDAttribute(builder, temp_attr_str,
-                                               temp_attr_desc, temp_attr_src,
-                                               attrDType, attrValuePayload);
+      auto attr = CreateAttribute(builder, temp_attr_str, temp_attr_desc,
+                                  temp_attr_src, attrDType, attrValuePayload);
       attrVec.push_back(attr);
     } else {
       assert(false);
@@ -71,58 +83,66 @@ void NDArraySerializer::SerializeData(NDArray &pArray,
     attr_ptr = pArray.pAttributeList->next(attr_ptr);
   }
   auto attributes = builder.CreateVector(attrVec);
-  auto kf_pkg =
-      FB_Tables::CreateNDArray(builder, pArray.uniqueId, pArray.timeStamp,
-                               &epics_ts, dims, dType, payload, attributes);
+  auto Timestamp = epicsTimeToNsec(pArray.epicsTS);
+  auto kf_pkg = CreateADArray(builder, SourceNamePtr, pArray.uniqueId,
+                              Timestamp, dims, dType, payload, attributes);
 
   // Write data to buffer
-  builder.Finish(kf_pkg, FB_Tables::NDArrayIdentifier());
+  builder.Finish(kf_pkg, ADArrayIdentifier());
 
   bufferPtr = builder.GetBufferPointer();
   bufferSize = builder.GetSize();
 }
 
-FB_Tables::DType NDArraySerializer::GetFB_DType(NDDataType_t arrType) {
+DType NDArraySerializer::GetFB_DType(NDDataType_t arrType) {
   switch (arrType) {
   case NDInt8:
-    return FB_Tables::DType::DType_int8;
+    return DType::DType_int8;
   case NDUInt8:
-    return FB_Tables::DType::DType_uint8;
+    return DType::DType_uint8;
   case NDInt16:
-    return FB_Tables::DType::DType_int16;
+    return DType::DType_int16;
   case NDUInt16:
-    return FB_Tables::DType::DType_uint16;
+    return DType::DType_uint16;
   case NDInt32:
-    return FB_Tables::DType::DType_int32;
+    return DType::DType_int32;
   case NDUInt32:
-    return FB_Tables::DType::DType_uint32;
+    return DType::DType_uint32;
+  case NDInt64:
+    return DType::DType_int64;
+  case NDUInt64:
+    return DType::DType_uint64;
   case NDFloat32:
-    return FB_Tables::DType::DType_float32;
+    return DType::DType_float32;
   case NDFloat64:
-    return FB_Tables::DType::DType_float64;
+    return DType::DType_float64;
   default:
     assert(false);
   }
-  return FB_Tables::DType::DType_int8;
+  return DType::DType_int8;
 }
 
-NDDataType_t NDArraySerializer::GetND_DType(FB_Tables::DType arrType) {
+NDDataType_t NDArraySerializer::GetND_DType(DType arrType) {
   switch (arrType) {
-  case FB_Tables::DType::DType_int8:
+  case DType::DType_int8:
     return NDInt8;
-  case FB_Tables::DType::DType_uint8:
+  case DType::DType_uint8:
     return NDUInt8;
-  case FB_Tables::DType::DType_int16:
+  case DType::DType_int16:
     return NDInt16;
-  case FB_Tables::DType::DType_uint16:
+  case DType::DType_uint16:
     return NDUInt16;
-  case FB_Tables::DType::DType_int32:
+  case DType::DType_int32:
     return NDInt32;
-  case FB_Tables::DType::DType_uint32:
+  case DType::DType_uint32:
     return NDUInt32;
-  case FB_Tables::DType::DType_float32:
+  case DType::DType_int64:
+    return NDInt64;
+  case DType::DType_uint64:
+    return NDUInt64;
+  case DType::DType_float32:
     return NDFloat32;
-  case FB_Tables::DType::DType_float64:
+  case DType::DType_float64:
     return NDFloat64;
   default:
     assert(false);
@@ -130,51 +150,59 @@ NDDataType_t NDArraySerializer::GetND_DType(FB_Tables::DType arrType) {
   return NDInt8;
 }
 
-FB_Tables::DType NDArraySerializer::GetFB_DType(NDAttrDataType_t attrType) {
+DType NDArraySerializer::GetFB_DType(NDAttrDataType_t attrType) {
   switch (attrType) {
   case NDAttrInt8:
-    return FB_Tables::DType::DType_int8;
+    return DType::DType_int8;
   case NDAttrUInt8:
-    return FB_Tables::DType::DType_uint8;
+    return DType::DType_uint8;
   case NDAttrInt16:
-    return FB_Tables::DType::DType_int16;
+    return DType::DType_int16;
   case NDAttrUInt16:
-    return FB_Tables::DType::DType_uint16;
+    return DType::DType_uint16;
   case NDAttrInt32:
-    return FB_Tables::DType::DType_int32;
+    return DType::DType_int32;
   case NDAttrUInt32:
-    return FB_Tables::DType::DType_uint32;
+    return DType::DType_uint32;
+  case NDAttrInt64:
+    return DType::DType_int64;
+  case NDAttrUInt64:
+    return DType::DType_uint64;
   case NDAttrFloat32:
-    return FB_Tables::DType::DType_float32;
+    return DType::DType_float32;
   case NDAttrFloat64:
-    return FB_Tables::DType::DType_float64;
+    return DType::DType_float64;
   case NDAttrString:
-    return FB_Tables::DType::DType_c_string;
+    return DType::DType_c_string;
   default:
     assert(false);
   }
-  return FB_Tables::DType::DType_int8;
+  return DType::DType_int8;
 }
 
-NDAttrDataType_t NDArraySerializer::GetND_AttrDType(FB_Tables::DType attrType) {
+NDAttrDataType_t NDArraySerializer::GetND_AttrDType(DType attrType) {
   switch (attrType) {
-  case FB_Tables::DType::DType_int8:
+  case DType::DType_int8:
     return NDAttrInt8;
-  case FB_Tables::DType::DType_uint8:
+  case DType::DType_uint8:
     return NDAttrUInt8;
-  case FB_Tables::DType::DType_int16:
+  case DType::DType_int16:
     return NDAttrInt16;
-  case FB_Tables::DType::DType_uint16:
+  case DType::DType_uint16:
     return NDAttrUInt16;
-  case FB_Tables::DType::DType_int32:
+  case DType::DType_int32:
     return NDAttrInt32;
-  case FB_Tables::DType::DType_uint32:
+  case DType::DType_uint32:
     return NDAttrUInt32;
-  case FB_Tables::DType::DType_float32:
+  case DType::DType_int64:
+    return NDAttrInt64;
+  case DType::DType_uint64:
+    return NDAttrUInt64;
+  case DType::DType_float32:
     return NDAttrFloat32;
-  case FB_Tables::DType::DType_float64:
+  case DType::DType_float64:
     return NDAttrFloat64;
-  case FB_Tables::DType::DType_c_string:
+  case DType::DType_c_string:
     return NDAttrString;
   default:
     assert(false);

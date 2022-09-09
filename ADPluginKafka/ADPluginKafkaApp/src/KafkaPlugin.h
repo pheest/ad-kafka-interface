@@ -12,7 +12,8 @@
 
 #include "KafkaProducer.h"
 #include "NDArraySerializer.h"
-#include "ParamUtility.h"
+#include "Parameter.h"
+#include "ParameterHandler.h"
 #include <NDPluginDriver.h>
 #include <map>
 
@@ -62,11 +63,13 @@ public:
    * @param[in] brokerTopic Topic from which the driver should consume messages.
    * Note that only
    * one topic can be specified.
+   * @param[in] sourceName String used as "source name" in the flatbuffer
+   * message sent to Kafka.
    */
   KafkaPlugin(const char *portName, int queueSize, int blockingCallbacks,
               const char *NDArrayPort, int NDArrayAddr, size_t maxMemory,
               int priority, int stackSize, const char *brokerAddress,
-              const char *brokerTopic);
+              const char *brokerTopic, const char *sourceName);
 
   /// @brief Destructor, currently empty.
   ~KafkaPlugin() = default;
@@ -77,7 +80,7 @@ public:
    * This member function will throw away packets if the Kafka queue is full!
    * @param[in] pArray The NDArray from the callback.
    */
-  void processCallbacks(NDArray *pArray);
+  void processCallbacks(NDArray *pArray) override;
 
   /** @brief Used to set the string parameters of the Kafka producer.
    * If a configuration string is updated, the Kafka prdoucer will be immediatly
@@ -93,7 +96,10 @@ public:
    * value.
    */
   asynStatus writeOctet(asynUser *pasynUser, const char *value, size_t nChars,
-                        size_t *nActual);
+                        size_t *nActual) override;
+
+  asynStatus readOctet(asynUser *pasynUser, char *value, size_t maxChars,
+                       size_t *nActual, int *eomReason) override;
 
   /** @brief Used to set integer paramters of the plugin.
    * @param[in] pasynUser pasynUser structure that encodes the reason and
@@ -102,42 +108,30 @@ public:
    * @return asynStatus value corresponding to the success of setting a new
    * value.
    */
-  asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
+  asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value) override;
+
+  asynStatus readInt32(asynUser *pasynUser, epicsInt32 *value) override;
+
+  asynStatus writeInt64(asynUser *pasynUser, epicsInt64 value) override;
+
+  asynStatus readInt64(asynUser *pasynUser, epicsInt64 *value) override;
 
 protected:
   /** @brief Interrupt mask passed to NDPluginDriver.
-   * @todo What does the interrupt mask actually do?
    */
-  static const int intMask{asynInt32ArrayMask | asynOctetMask |
-                           asynGenericPointerMask};
+  static const int intMask{asynInt32Mask | asynInt64Mask | asynOctetMask};
 
-  /** @brief Used to keep track of the lowest PV index in order to know which
-   * write events should
-   * be passed to the parent class.
-   */
-  int MIN_PARAM_INDEX;
+  ParameterHandler ParamRegistrar{this};
 
   /// @brief The kafka producer which is used to send serialized NDArray data to
   /// the broker.
   KafkaProducer producer;
 
   /// @brief The class instance used to serialize NDArray data.
-  NDArraySerializer serializer;
+  NDArraySerializer Serializer;
 
-  /// @brief Used to keep track of the PV:s made available by this driver.
-  enum PV {
-    kafka_addr,
-    kafka_topic,
-    stats_time,
-    queue_size,
-    count,
-  };
-
-  /// @brief The list of PV:s created by the driver and their definition.
-  std::vector<PV_param> paramsList = {
-      PV_param("KAFKA_BROKER_ADDRESS", asynParamOctet), // kafka_addr
-      PV_param("KAFKA_TOPIC", asynParamOctet),          // kafka_topic
-      PV_param("KAFKA_STATS_INT_MS", asynParamInt32),   // stats_time
-      PV_param("KAFKA_QUEUE_SIZE", asynParamInt32),     // queue_size
-  };
+  Parameter<std::string> SourceName{
+      "SOURCE_NAME",
+      [&](std::string NewValue) { return Serializer.setSourceName(NewValue); },
+      [&]() { return Serializer.getSourceName(); }};
 };

@@ -3,20 +3,112 @@
 
 include "NDPluginBase.template"
 
+##### Source name
+
+record(stringout, "$(P)$(R)SourceName")
+{
+    field(DTYP, "asynOctetWrite")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SOURCE_NAME")
+    field(FLNK,  "$(P)$(R)SourceName_RBV")
+    info(asyn:INITIAL_READBACK, "1")
+}
+
+record(stringin, "$(P)$(R)SourceName_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SOURCE_NAME")
+    field(PINI, "YES")
+}
+
+##### Reconnect flush
+
+record(bo, "$(P)$(R)ReconnectFlush")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))KAFKA_RECONNECT_FLUSH")
+   field(ZNAM, "No flush")
+   field(ONAM, "Flush")
+   field(FLNK,  "$(P)$(R)ReconnectFlush_RBV")
+   info(asyn:INITIAL_READBACK, "1")
+}
+
+record(bi, "$(P)$(R)ReconnectFlush_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))KAFKA_RECONNECT_FLUSH")
+   field(ZNAM, "No flush")
+   field(ONAM, "Flush")
+   field(PINI, "YES")
+}
+
+##### Reconnect flush time
+
+record(longout, "$(P)$(R)ReconnectFlushTime")
+{
+    field(DTYP, "asynInt32")	#Data type
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))KAFKA_FLUSH_TIME")
+    field(EGU,  "ms")
+    field(FLNK,  "$(P)$(R)ReconnectFlushTime_RBV")
+    info(asyn:INITIAL_READBACK, "1")
+}
+
+record(longin, "$(P)$(R)ReconnectFlushTime_RBV")
+{
+    field(DTYP, "asynInt32")	#Data type
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))KAFKA_FLUSH_TIME")
+    field(EGU,  "ms")
+    field(PINI, "YES")
+}
+
+##### Kafka buffer size
+
+record(longout, "$(P)$(R)KafkaBufferSize")
+{
+    field(DTYP, "asynInt32")	#Data type
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))KAFKA_MSG_BUFFER_SIZE")
+    field(EGU,  "kb")
+    field(FLNK,  "$(P)$(R)KafkaBufferSize_RBV")
+    info(asyn:INITIAL_READBACK, "1")
+}
+
+record(longin, "$(P)$(R)KafkaBufferSize_RBV")
+{
+    field(DTYP, "asynInt32")	#Data type
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))KAFKA_MSG_BUFFER_SIZE")
+    field(EGU,  "kb")
+    field(PINI, "YES")
+}
+
+##### Kafka max msg size
+
+record(longout, "$(P)$(R)KafkaMaxMessageSize")
+{
+    field(DTYP, "asynInt32")	#Data type
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))KAFKA_MAX_MSG_SIZE")
+    field(EGU,  "bytes")
+    field(FLNK,  "$(P)$(R)KafkaMaxMessageSize_RBV")
+    info(asyn:INITIAL_READBACK, "1")
+}
+
+record(longin, "$(P)$(R)KafkaMaxMessageSize_RBV")
+{
+    field(DTYP, "asynInt32")	#Data type
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))KAFKA_MAX_MSG_SIZE")
+    field(EGU,  "bytes")
+    field(PINI, "YES")
+}
+
+##### Kafka unsent packets
+
 record(longin, "$(P)$(R)UnsentPackets_RBV") #Integer in from device
 {
     field(DTYP, "asynInt32")	#Data type
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))KAFKA_UNSENT_PACKETS")
-	field(SCAN, "I/O Intr")		#Update value on interrupt
+    field(SCAN, "I/O Intr")
+    field(PINI, "YES")
 }
 
-record(longin, "$(P)$(R)KafkaMaxMessageSize_RBV") #Integer in from device
-{
-    field(DTYP, "asynInt32")	#Data type
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))KAFKA_MAX_MSG_SIZE")
-	field(SCAN, "I/O Intr")		#Update value on interrupt
-    field(EGU,  "byte")
-}
+##### Kafka connection status packets
 
 record(mbbi, "$(P)$(R)ConnectionStatus_RBV") #Multi bit binary input
 {
@@ -31,67 +123,85 @@ record(mbbi, "$(P)$(R)ConnectionStatus_RBV") #Multi bit binary input
    field(THST, "Error")
    field(THVL, "3")
    field(SCAN, "I/O Intr")
+   field(PINI, "YES")
 }
+
+##### Kafka connection message
 
 record(stringin, "$(P)$(R)ConnectionMessage_RBV")
 {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))KAFKA_CONNECTION_MESSAGE")
-    field(SCAN, "I/O Intr")	#Update value on interrupt
-}
-
-record(stringout, "$(P)$(R)KafkaBrokerAddress")
-{
-    field(DTYP, "asynOctetWrite")
-    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))KAFKA_BROKER_ADDRESS")
-	field(PINI, "NO")
-}
-
-record(stringin, "$(P)$(R)KafkaBrokerAddress_RBV")
-{
-    field(DTYP, "asynOctetRead")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))KAFKA_BROKER_ADDRESS")
     field(SCAN, "I/O Intr")
+    field(PINI, "YES")
 }
+
+##### Kafka topic
 
 record(stringout, "$(P)$(R)KafkaTopic")
 {
     field(DTYP, "asynOctetWrite")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))KAFKA_TOPIC")
-	field(PINI, "NO")
+	field(FLNK, "$(P)$(R)KafkaTopic_RBV")
+	info(asyn:INITIAL_READBACK, "1")
 }
 
 record(stringin, "$(P)$(R)KafkaTopic_RBV")
 {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))KAFKA_TOPIC")
-	field(SCAN, "I/O Intr")
+	field(PINI, "YES")
 }
+
+##### Kafka broker address
+
+record(stringout, "$(P)$(R)KafkaBrokerAddress")
+{
+    field(DTYP, "asynOctetWrite")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))KAFKA_BROKER_ADDRESS")
+	field(FLNK, "$(P)$(R)KafkaBrokerAddress_RBV")
+	info(asyn:INITIAL_READBACK, "1")
+}
+
+record(stringin, "$(P)$(R)KafkaBrokerAddress_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))KAFKA_BROKER_ADDRESS")
+    field(PINI, "YES")
+}
+
+##### Kafka stats interval
 
 record(longout, "$(P)$(R)KafkaStatsIntervalTime") #Integer in from device
 {
     field(DTYP, "asynInt32")	#Data type
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))KAFKA_STATS_INT_MS")
     field(EGU,  "ms")
+    field(FLNK, "$(P)$(R)KafkaStatsIntervalTime_RBV")
+    info(asyn:INITIAL_READBACK, "1")
 }
 
 record(longin, "$(P)$(R)KafkaStatsIntervalTime_RBV") #Integer in from device
 {
     field(DTYP, "asynInt32")	#Data type
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))KAFKA_STATS_INT_MS")
-	field(SCAN, "I/O Intr")		#Update value on interrupt
     field(EGU,  "ms")
+    field(PINI, "YES")
 }
+
+##### Kafka max queue size
 
 record(longout, "$(P)$(R)KafkaMaxQueueSize") #Integer in from device
 {
     field(DTYP, "asynInt32")	#Data type
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))KAFKA_QUEUE_SIZE")
+    field(FLNK, "$(P)$(R)KafkaMaxQueueSize_RBV")
+    info(asyn:INITIAL_READBACK, "1")
 }
 
 record(longin, "$(P)$(R)KafkaMaxQueueSize_RBV") #Integer in from device
 {
     field(DTYP, "asynInt32")	#Data type
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))KAFKA_QUEUE_SIZE")
-	field(SCAN, "I/O Intr")		#Update value on interrupt
+    field(PINI, "YES")
 }

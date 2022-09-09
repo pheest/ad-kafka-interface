@@ -5,8 +5,9 @@
  */
 #pragma once
 
-#include "NDArray_schema_generated.h"
+#include "ADArray_schema_generated.h"
 #include <NDArray.h>
+#include <flatbuffers/flatbuffers.h>
 
 /** @brief Class which is used to serialize NDArray data using flatbuffers.
  * The C++ flatbuffers implementatione has an internal buffer for storing the
@@ -28,7 +29,8 @@ public:
    * if the data does
    * not fit.
    */
-  explicit NDArraySerializer(const flatbuffers::uoffset_t bufferSize = 1048576);
+  explicit NDArraySerializer(std::string SourceName,
+                             const flatbuffers::uoffset_t bufferSize = 1048576);
 
   /** @brief Serializes data held in the input NDArray.
    * Note that the returned pointer is only valid until next time
@@ -42,6 +44,9 @@ public:
   void SerializeData(NDArray &pArray, unsigned char *&bufferPtr,
                      size_t &bufferSize);
 
+  bool setSourceName(std::string NewSourceName);
+  std::string getSourceName();
+
 protected:
   /** @brief Used to convert from areaDetector data type to flatbuffer data
    * type.
@@ -51,7 +56,7 @@ protected:
    * @param[in] arrType areaDetector data type.
    * @return flatbuffer data type.
    */
-  static FB_Tables::DType GetFB_DType(NDDataType_t arrType);
+  static DType GetFB_DType(NDDataType_t arrType);
 
   /** @brief Used to convert from flatbuffer data type to areaDetector data
    * type.
@@ -61,7 +66,7 @@ protected:
    * @param[in] arrType areaDetector data type.
    * @return NDArray data type.
    */
-  static NDDataType_t GetND_DType(FB_Tables::DType arrType);
+  static NDDataType_t GetND_DType(DType arrType);
 
   /** @brief Used to convert from areaDetector attribute data type to flatbuffer
    * data type.
@@ -73,7 +78,7 @@ protected:
    * @param[in] attrType areaDetector attribute data type.
    * @return flatbuffer data type.
    */
-  static FB_Tables::DType GetFB_DType(NDAttrDataType_t attrType);
+  static DType GetFB_DType(NDAttrDataType_t attrType);
 
   /** @brief Used to convert from flatbuffer attribute data type to areaDetector
    * data type.
@@ -82,9 +87,11 @@ protected:
    * @param[in] attrType flatbuffer attribute data type.
    * @return areaDetector data type.
    */
-  static NDAttrDataType_t GetND_AttrDType(FB_Tables::DType attrType);
+  static NDAttrDataType_t GetND_AttrDType(DType attrType);
 
 private:
+  std::string SourceName;
+
   /// @brief The flatbuffer builder which serializes the data.
   flatbuffers::FlatBufferBuilder builder;
 };

@@ -2,5 +2,8 @@ if [ -z "$EPICS_HOST_ARCH" ]; then
     EPICS_HOST_ARCH=linux-x86_64
 fi
 
+export TOP=/builds/DATAnet/ad-kafka-interface/ADKafka/iocs/ADKafkaIOC
+export ADCORE=/builds/DATAnet/ad-kafka-interface/.cache/adcore-master
+export ADKAFKA=/builds/DATAnet/ad-kafka-interface/.cache/ADKafka
 ../../bin/$EPICS_HOST_ARCH/ADKafkaApp st.cmd
 
