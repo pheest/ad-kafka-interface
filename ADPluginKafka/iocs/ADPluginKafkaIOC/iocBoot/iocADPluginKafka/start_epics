@@ -1,3 +1,5 @@
-
-../../bin/darwin-x86/ADPluginKafkaApp st.cmd
-
+export MAGICK_DEBUG=configure,exception
+if [ -z "$EPICS_HOST_ARCH" ]; then
+    EPICS_HOST_ARCH=linux-x86_64
+fi
+../../bin/$EPICS_HOST_ARCH/ADPluginKafkaApp st.cmd

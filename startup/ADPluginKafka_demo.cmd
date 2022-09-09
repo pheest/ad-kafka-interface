@@ -1,18 +1,15 @@
-require adcore,2.6+
-require adsimdetector,2.4+
-
 epicsEnvSet("PREFIX", "$(PREFIX=YSX26594)")
-epicsEnvSet("SIMDET_PORT", "$(PREFIX)SIMDET")
+epicsEnvSet("ADURL_PORT", "URL1")
 epicsEnvSet("K_PORT", "$(PREFIX)K")
 epicsEnvSet("XSIZE", "$(XSIZE=200)")
 epicsEnvSet("YSIZE", "$(YSIZE=200)")
 epicsEnvSet("QSIZE", "20")
 
-simDetectorConfig("$(SIMDET_PORT)", $(XSIZE), $(YSIZE), 1, 0, 0)
-dbLoadRecords("simDetector.template", "P=$(PREFIX):, R=CAM:, PORT=$(SIMDET_PORT), ADDR=0, TIMEOUT=1")
+URLDriverConfig("$(ADURL_PORT)", 0, 0)
+dbLoadRecords("$(ADURL)/db/URLDriver.template","P=$(PREFIX),R=cam1:,PORT=$(PORT),ADDR=0,TIMEOUT=1")
 
-KafkaPluginConfigure("$(K_PORT)", 3, 1, "$(SIMDET_PORT)", 0, -1, "cs04r-sc-vserv-197:9092", "sim_data_topic")
-dbLoadRecords("ADPluginKafka.template", "P=$(PREFIX),R=:KFK:,PORT=$(K_PORT),ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(SIMDET_PORT)")
+KafkaPluginConfigure("$(K_PORT)", 3, 1, "$(ADURL_PORT)", 0, -1, "cs04r-sc-vserv-197:9092", "sim_data_topic")
+dbLoadRecords("ADPluginKafka.template", "P=$(PREFIX),R=:KFK:,PORT=$(K_PORT),ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(ADURL_PORT)")
 
 iocInit
 

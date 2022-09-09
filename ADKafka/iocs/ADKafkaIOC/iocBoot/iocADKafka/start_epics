@@ -1,3 +1,6 @@
+if [ -z "$EPICS_HOST_ARCH" ]; then
+    EPICS_HOST_ARCH=linux-x86_64
+fi
 
-../../bin/darwin-x86/ADKafkaApp st.cmd
+../../bin/$EPICS_HOST_ARCH/ADKafkaApp st.cmd
 

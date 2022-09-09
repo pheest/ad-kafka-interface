@@ -8,13 +8,13 @@ To simplify data handling, the plugin uses flatbuffers ([https://github.com/goog
 
 `librdkafka` produces statistics messages in JSON and these are parsed using `jsoncpp` ([https://github.com/open-source-parsers/jsoncpp](https://github.com/open-source-parsers/jsoncpp)). To simplify building of this project, the `jsoncpp` source code has been included in this project. The license of this library can be found in the file *jsoncpp_LICENSE.txt*.
 
-In order to run the demo of the plugin in the `startup` (or `iocs`) directory, the module `ADSimDetector` is required as it contains features for running a simulated areaDetector.
+In order to run the demo of the plugin in the `startup` (or `iocs`) directory, the module `ADURL` is required as it contains features for running a simulated areaDetector.
 
 ## Compiling and running the example
 The steps shown here worked on the development machine but has been tested nowhere else.
 
 1. Copy the _ADPluginKafka_ directory to your _$(EPICS_MODULES_PATH)/areaDetector_ directory.
-2. Set the variable `SIMDET` in the file _ADPluginKafka/iocs/ADPluginKafkaIOC/configure/RELEASE_ to point to the location of _ADSimDetector_ in your EPICS installation.
+2. Set the variable `ADURL` in the file _ADPluginKafka/iocs/ADPluginKafkaIOC/configure/RELEASE_ to point to the location of _ADURL_ in your EPICS installation.
 3. Modify the file _ADPluginKafka/configure/RELEASE.local_ such that `EPICS_MODULES_PATH` and `SUPPORT` points to the directory of you EPICS modules.
 4. Modify the files _Makefile_ and _start_epics_ in the _ADPluginKafka/iocs/ADPluginKafkaIOC/iocBoot/iocADPluginKafka_ directory to reflect the current platform.
 5. Change (`cd`) to the _ADPluginKafka_ directory and compile by running `make`.
