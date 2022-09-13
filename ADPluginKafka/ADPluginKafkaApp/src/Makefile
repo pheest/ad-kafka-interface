@@ -28,7 +28,7 @@ LIB_SRCS += ParameterHandler.cpp
 DBD += ADPluginKafka.dbd
 
 LIB_LIBS += NDPlugin
-LIB_LIBS += rdkafka++ rdkafka
+LIB_SYS_LIBS += rdkafka++ rdkafka
 
 RDKAFKA = /usr/local
 

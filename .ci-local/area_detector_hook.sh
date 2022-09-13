@@ -33,9 +33,9 @@ popd
 
 #hack config_site.local
 sed -i -e "/^WITH_PVA\s*=/ s,=.*,=YES," $AREA_DETECTOR/configure/CONFIG_SITE.local
-sed -i -e "/^WITH_OPENCV\s*=/ s,=.*,=NO," $AREA_DETECTOR/configure/CONFIG_SITE.local
-sed -i -e "/^WITH_QSRV\s*=/ s,=.*,=NO," $AREA_DETECTOR/configure/CONFIG_SITE.local
+sed -i -e "/^WITH_QSRV\s*=/ s,=.*,=YES," $AREA_DETECTOR/configure/CONFIG_SITE.local
 sed -i -e "/^WITH_BITSHUFFLE\s*=/ s,=.*,=NO," $AREA_DETECTOR/configure/CONFIG_SITE.local
+sed -i -e "/^WITH_OPENCV\s*=/ s,=.*,=NO," $AREA_DETECTOR/configure/CONFIG_SITE.local
 
 # EXAMPLE_CONFIG_SITE.local.linux-x86_64 sets WITH_BOOST. I don't wannit.
 if [ -f $AREA_DETECTOR/configure/CONFIG_SITE.local.$EPICS_HOST_ARCH ]; then

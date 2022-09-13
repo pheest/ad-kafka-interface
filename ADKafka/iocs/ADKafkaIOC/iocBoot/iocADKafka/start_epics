@@ -4,6 +4,6 @@ fi
 
 export TOP=/builds/DATAnet/ad-kafka-interface/ADKafka/iocs/ADKafkaIOC
 export ADCORE=/builds/DATAnet/ad-kafka-interface/.cache/adcore-master
-export ADKAFKA=/builds/DATAnet/ad-kafka-interface/.cache/ADKafka
+export ADKAFKA=/builds/DATAnet/ad-kafka-interface/ADKafka
 ../../bin/$EPICS_HOST_ARCH/ADKafkaApp st.cmd
 

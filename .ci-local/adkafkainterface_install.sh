@@ -14,6 +14,12 @@ set -e
 apt-get install -y libreadline6-dev libncurses5-dev perl clang g++-mingw-w64-i686 g++-mingw-w64-x86-64 qemu-system-x86 re2c tar
 apt-get install -y build-essential git python3 python-is-python3 curl p7zip-full wget libxml2-dev libx11-dev libxext-dev libntirpc-dev librdkafka-dev
 
+#install ImageJ and ADViewers for visualtion.
+.ci-local/adviewers_install.sh
+
+# Install kafka broker.
+.ci-local/kafka_install.sh
+
 export GITLAB_CI=1
 export SETUP_PATH=".ci-local:.ci"
 export BASE_RECURSIVE="YES"

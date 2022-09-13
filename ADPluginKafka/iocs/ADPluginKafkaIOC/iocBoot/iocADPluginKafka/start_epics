@@ -1,5 +1,10 @@
-export MAGICK_DEBUG=configure,exception
 if [ -z "$EPICS_HOST_ARCH" ]; then
     EPICS_HOST_ARCH=linux-x86_64
 fi
+
+export MAGICK_DEBUG=configure,exception
+export TOP=/builds/DATAnet/ad-kafka-interface/ADKafka/iocs/ADPluginKafkaIOC
+export ADCORE=/builds/DATAnet/ad-kafka-interface/.cache/adcore-master
+export ADURL=/builds/DATAnet/ad-kafka-interface/.cache/adurl-master
+export ADPLUGINKAFKA=/builds/DATAnet/ad-kafka-interface/ADPluginKafka
 ../../bin/$EPICS_HOST_ARCH/ADPluginKafkaApp st.cmd
