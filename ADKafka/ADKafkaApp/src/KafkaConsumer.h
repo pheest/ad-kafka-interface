@@ -10,7 +10,12 @@
 #include "ParamUtility.h"
 #include "json.h"
 #include <asynNDArrayDriver.h>
+#ifdef _WIN32
+#include <rdkafkacpp.h>
+#else
 #include <librdkafka/rdkafkacpp.h>
+#endif
+
 #include <memory>
 #include <string>
 #include <vector>

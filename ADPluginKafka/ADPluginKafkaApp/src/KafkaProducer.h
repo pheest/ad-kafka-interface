@@ -13,7 +13,11 @@
 #include <asynNDArrayDriver.h>
 #include <atomic>
 #include <chrono>
+#ifdef _WIN32
+#include <rdkafkacpp.h>
+#else
 #include <librdkafka/rdkafkacpp.h>
+#endif
 #include <memory>
 #include <mutex>
 #include <thread>
@@ -213,7 +217,7 @@ protected:
       500}; /// @brief What is the timeout of the flush attempt?
 
   size_t maxMessageSize{
-      50000000}; /// @brief Stored maximum message size in bytes.
+      0}; /// @brief Default maximum message size in bytes.
   size_t maxMessageBufferSizeKb{
       2500000};      /// @brief Message buffer size in kilo bytes.
   int msgQueueSize{200}; /// @brief Stored maximum Kafka producer queue length.

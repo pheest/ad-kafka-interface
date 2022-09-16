@@ -15,10 +15,10 @@ apt-get install -y libreadline6-dev libncurses5-dev perl clang g++-mingw-w64-i68
 apt-get install -y build-essential git python3 python-is-python3 curl p7zip-full wget libxml2-dev libx11-dev libxext-dev libntirpc-dev librdkafka-dev
 
 #install ImageJ and ADViewers for visualtion.
-.ci-local/adviewers_install.sh
+.ci-local/adviewers_install.sh > /tmp/adviewers_install.log 2>&1
 
 # Install kafka broker.
-.ci-local/kafka_install.sh
+.ci-local/kafka_install.sh > /tmp/kafka_install.log 2>&1
 
 export GITLAB_CI=1
 export SETUP_PATH=".ci-local:.ci"

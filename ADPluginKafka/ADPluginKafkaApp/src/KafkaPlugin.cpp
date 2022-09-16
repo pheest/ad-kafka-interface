@@ -45,6 +45,7 @@ void KafkaPlugin::processCallbacks(NDArray *pArray) {
     droppedArrays++;
     setIntegerParam(NDPluginDriverDroppedArrays, droppedArrays);
   }
+  NDPluginDriver::endProcessCallbacks(pArray, true, true);
   callParamCallbacks();
 }
 

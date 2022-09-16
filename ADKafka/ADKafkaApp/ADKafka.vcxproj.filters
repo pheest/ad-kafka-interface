@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <None Include="src\Makefile">
+      <Filter>Src</Filter>
+    </None>
+    <None Include="src\NDArray_schema.fbs">
+      <Filter>Src</Filter>
+    </None>
+    <None Include="Db\ADKafka.req">
+      <Filter>Db</Filter>
+    </None>
+    <None Include="Db\ADKafka.template">
+      <Filter>Db</Filter>
+    </None>
+    <None Include="Db\Makefile">
+      <Filter>Db</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Src">
+      <UniqueIdentifier>{7845b4a7-f46f-4e61-8292-34ac159a8f1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Db">
+      <UniqueIdentifier>{b433b273-5394-436c-a82f-99da5d0ebc12}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="src\ADKafka.dbd" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\base.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\flatbuffers.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\json.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\KafkaConsumer.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\KafkaDriver.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\NDArray_schema_generated.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\NDArrayDeSerializer.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ParamUtility.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\stl_emulation.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\jsoncpp.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\KafkaConsumer.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\KafkaDriver.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\NDArrayDeSerializer.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

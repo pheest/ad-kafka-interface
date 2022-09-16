@@ -111,9 +111,15 @@ std::unique_ptr<KafkaMessage> KafkaConsumer::WaitForPkg(int timeout) {
       setParam(paramCallback, paramsList[PV::msg_offset],
                static_cast<int>(topicOffset));
       return std::unique_ptr<KafkaMessage>(new KafkaMessage(msg));
-    } else {
-      delete msg;
-      return nullptr;
+    } else if (msg->err() == RdKafka::ERR__TIMED_OUT) {
+        // Timeout is not an error
+        delete msg;
+        return nullptr;
+    }
+    else {
+        fprintf(stderr, "Kafka error: %s\n", msg->errstr().c_str());
+        delete msg;
+        return nullptr;
     }
   } else {
     return nullptr;
@@ -144,11 +150,11 @@ void KafkaConsumer::event_cb(RdKafka::Event &event) {
     break;
   default:
     if ((event.type() == RdKafka::Event::EVENT_LOG) and
-        (event.severity() == RdKafka::Event::EVENT_SEVERITY_ERROR)) {
-      /// @todo Add message/log or something
+        (event.severity() <= RdKafka::Event::EVENT_SEVERITY_WARNING)) {
+        printf("Kafka error: %d\n", event.str());
 
     } else {
-      /// @todo Add message/log or something
+        /// @todo Add message/log or something
     }
   }
 }

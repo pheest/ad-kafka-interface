@@ -10,6 +10,8 @@
 #include <ciso646>
 #include <cstdlib>
 
+static const int RD_KAFKAP_MESSAGE_V2_MAX_OVERHEAD = 36;
+
 namespace KafkaInterface {
 
 KafkaProducer::KafkaProducer(std::string const &broker, std::string topic,
@@ -62,14 +64,15 @@ bool KafkaProducer::StartThread() {
 }
 
 void KafkaProducer::ThreadFunction() {
-  // Uses std::this_thread::sleep_for() as it can not know if a producer has
-  // been allocated.
   while (runThread) {
-    std::this_thread::sleep_for(PollSleepTime);
     {
       std::lock_guard<std::mutex> lock(brokerMutex);
       if (Producer != nullptr) {
-        Producer->poll(0);
+        Producer->poll(PollSleepTime.count());
+      }
+      else {
+          // A producer has not been allocated.
+          std::this_thread::sleep_for(PollSleepTime);
       }
     }
   }
@@ -79,13 +82,10 @@ bool KafkaProducer::SetMaxMessageSize(size_t msgSize) {
   if (errorState or 0 == msgSize) {
     return false;
   }
-  RdKafka::Conf::ConfResult configResult1, configResult2;
-  configResult1 =
-      conf->set("message.max.bytes", std::to_string(msgSize), errstr);
-  configResult2 =
-      conf->set("message.copy.max.bytes", std::to_string(msgSize), errstr);
-  if (RdKafka::Conf::CONF_OK != configResult1 or
-      RdKafka::Conf::CONF_OK != configResult2) {
+  RdKafka::Conf::ConfResult configResult;
+  configResult =
+      conf->set("message.max.bytes", std::to_string(msgSize + RD_KAFKAP_MESSAGE_V2_MAX_OVERHEAD), errstr);
+  if (RdKafka::Conf::CONF_OK != configResult) {
     SetConStat(KafkaProducer::ConStat::ERROR,
                "Unable to set max message size.");
     return false;
@@ -114,7 +114,14 @@ bool KafkaProducer::SetMessageBufferSizeKbytes(size_t msgBufferSize) {
 size_t KafkaProducer::GetMessageBufferSizeKbytes() {
   return maxMessageBufferSizeKb;
 }
-size_t KafkaProducer::GetMaxMessageSize() { return maxMessageSize; }
+
+size_t KafkaProducer::GetMaxMessageSize() {
+    std::string maxMessageSizeStr;
+    conf->get("message.max.bytes", maxMessageSizeStr);
+    if (maxMessageSizeStr.size() > 0)
+        maxMessageSize = std::atoi(maxMessageSizeStr.c_str());
+    return maxMessageSize;
+}
 
 bool KafkaProducer::SetMessageQueueLength(int queue) {
   if (errorState or 0 >= queue) {
@@ -155,7 +162,7 @@ bool KafkaProducer::SendKafkaPacket(const unsigned char *buffer,
                          Timestamp.time_since_epoch())
                          .count();
   RdKafka::ErrorCode resp = Producer->produce(
-      TopicName, -1, RdKafka::Producer::RK_MSG_COPY /* Copy payload */,
+      TopicName, -1, RdKafka::Producer::RK_MSG_BLOCK /* Copy payload */,
       const_cast<unsigned char *>(buffer), buffer_size, nullptr, 0, MessageTime,
       nullptr);
 

@@ -273,7 +273,7 @@ void KafkaDriver::consumeTask() {
         if (not keepThreadAlive) {
           goto exitConsumeTaskLabel; // This is justified in my opinion
         }
-        auto fbImg = consumer.WaitForPkg(0);
+        auto fbImg = consumer.WaitForPkg(50);
         if (fbImg != nullptr) {
           asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                     "%s:%s: Got Kafka msg when none should be received.\n",

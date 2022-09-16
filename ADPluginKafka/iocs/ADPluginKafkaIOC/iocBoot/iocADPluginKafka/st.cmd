@@ -20,11 +20,11 @@ dbLoadRecords("$(ADURL)/db/URLDriver.template","P=$(PREFIX),R=:cam1:,PORT=$(ADUR
 # Create a standard arrays plugin.
 NDStdArraysConfigure("Image1", 3, 0, "$(ADURL_PORT)", 0)
 # This waveform only allows transporting 8-bit images
-dbLoadRecords("$(ADCORE)/db/NDStdArrays.template", "P=$(PREFIX),R=:image1:,PORT=Image1,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(ADURL_PORT),TYPE=Int8,FTVL=UCHAR,NELEMENTS=12582912")
+dbLoadRecords("$(ADCORE)/db/NDStdArrays.template", "P=$(PREFIX),R=:image1:,PORT=Image1,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(ADURL_PORT),TYPE=Int8,FTVL=UCHAR,NELEMENTS=10485760")
 
 # KafkaPluginConfigure(const char *portName, int queueSize, int blockingCallbacks, const char *NDArrayPort, int NDArrayAddr, size_t maxMemory, const char *brokerAddress, const char *topic, const char *sourceName
 KafkaPluginConfigure("$(K_PORT)", 3, 1, "$(ADURL_PORT)", 0, -1, "localhost:9092", "url_data_topic", "$(ADURL_PORT)")
-dbLoadRecords("$(ADPLUGINKAFKA)/db/ADPluginKafka.template", "P=$(PREFIX),R=:KFK:,PORT=$(K_PORT),ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(ADURL_PORT),FTVL=UCHAR,NELEMENTS=12582912")
+dbLoadRecords("$(ADPLUGINKAFKA)/db/ADPluginKafka.template", "P=$(PREFIX),R=:KFK:,PORT=$(K_PORT),ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(ADURL_PORT),FTVL=UCHAR,NELEMENTS=10485760")
 
 # Load all other plugins using commonPlugins.cmd
 # < $(ADCORE)/iocBoot/commonPlugins.cmd

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <None Include="Db\Makefile">
+      <Filter>Db</Filter>
+    </None>
+    <None Include="src\ADArray_schema.fbs">
+      <Filter>Src</Filter>
+    </None>
+    <None Include="src\Makefile">
+      <Filter>Src</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Src">
+      <UniqueIdentifier>{7845b4a7-f46f-4e61-8292-34ac159a8f1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Db">
+      <UniqueIdentifier>{b433b273-5394-436c-a82f-99da5d0ebc12}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\ADArray_schema_generated.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\KafkaPlugin.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\KafkaProducer.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\NDArraySerializer.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Parameter.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ParameterHandler.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TimeUtility.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\jsoncpp.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\KafkaPlugin.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\KafkaProducer.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\NDArraySerializer.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Parameter.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ParameterHandler.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TimeUtility.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="src\ADPluginKafka.dbd" />
+  </ItemGroup>
+</Project>
