@@ -28,7 +28,6 @@ PROD_SYS_LIBS += rdkafka++
 PROD_SYS_LIBS += rdkafka
 PROD_LIBS_WIN32 += ssleay32 libeay32
 PROD_SYS_LIBS_Linux += ssl crypto
-PROD_SYS_LIBS_Linux += sasl2
 
 include $(ADCORE)/ADApp/commonDriverMakefile
 
