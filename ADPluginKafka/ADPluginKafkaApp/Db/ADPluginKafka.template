@@ -96,6 +96,7 @@ record(longin, "$(P)$(R)KafkaMaxMessageSize_RBV")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))KAFKA_MAX_MSG_SIZE")
     field(EGU,  "bytes")
     field(PINI, "YES")
+    field(SCAN, "1 second")		#Can't do this with interrupt
 }
 
 ##### Kafka unsent packets

@@ -119,7 +119,7 @@ size_t KafkaProducer::GetMaxMessageSize() {
     std::string maxMessageSizeStr;
     conf->get("message.max.bytes", maxMessageSizeStr);
     if (maxMessageSizeStr.size() > 0)
-        maxMessageSize = std::atoi(maxMessageSizeStr.c_str());
+        maxMessageSize = std::atoi(maxMessageSizeStr.c_str()) - RD_KAFKAP_MESSAGE_V2_MAX_OVERHEAD;
     return maxMessageSize;
 }
 
@@ -162,7 +162,7 @@ bool KafkaProducer::SendKafkaPacket(const unsigned char *buffer,
                          Timestamp.time_since_epoch())
                          .count();
   RdKafka::ErrorCode resp = Producer->produce(
-      TopicName, -1, RdKafka::Producer::RK_MSG_BLOCK /* Copy payload */,
+      TopicName, -1, RdKafka::Producer::RK_MSG_BLOCK /* Not copy payload */,
       const_cast<unsigned char *>(buffer), buffer_size, nullptr, 0, MessageTime,
       nullptr);
 
