@@ -16,9 +16,9 @@ set -e
 if [ ! -f /etc/systemd/system/zookeeper.service ]; then
     apt-get install -y default-jdk
 
-    wget --tries=3 --timeout=10 https://dlcdn.apache.org/kafka/3.2.0/kafka_2.13-3.2.0.tgz
-    tar xzf kafka_2.13-3.2.0.tgz 
-    mv kafka_2.13-3.2.0 /usr/local/kafka
+    wget --tries=3 --timeout=10 https://dlcdn.apache.org/kafka/3.2.3/kafka_2.13-3.2.3.tgz
+    tar xzf kafka_2.13-3.2.3.tgz 
+    mv kafka_2.13-3.2.3 /usr/local/kafka
 
     echo [Unit] > /etc/systemd/system/zookeeper.service
     echo Description=Apache Zookeeper server >> /etc/systemd/system/zookeeper.service
@@ -59,7 +59,7 @@ if [ ! -f /etc/systemd/system/kafka.service ]; then
     echo WantedBy=multi-user.target >> /etc/systemd/system/kafka.service
     
     # Large request size is required for camera images.
-    sed -i "s/#max.request.size=/max.request.size=10485760/g" >> /usr/local/kafka/config/producer.properties
+    sed -i "s/#max.request.size=/max.request.size=10485760/g" "/usr/local/kafka/config/producer.properties"
     sed -i "s/#batch.size=/batch.size=10485760/g" "/usr/local/kafka/config/producer.properties"
     
     # /tmp path is cleaned at system boot, so deleting file data.
@@ -75,6 +75,6 @@ if [ ! -f /etc/systemd/system/kafka.service ]; then
     pushd /usr/local/kafka
     bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 1 --topic url_data_topic --config max.message.bytes=10485760
     popd
-    rm kafka_2.13-3.2.0.tgz
+    rm kafka_2.13-3.2.3.tgz
     
 fi
