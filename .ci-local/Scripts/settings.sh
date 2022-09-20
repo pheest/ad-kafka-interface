@@ -5,9 +5,5 @@ caput -S DMSC:cam1:URL1 http://202.245.13.81/cgi-bin/mjpeg
 # caput -S DMSC:cam1:URL1 http://192.168.100.10/cgi-bin/mjpeg
 # caput -S DMSC:cam1:URL1 http://192.168.100.10/cgi-bin/camera
 caput DMSC:cam1:URLSelect.ZRST Panasonic BL-VP101
-caput DMSC:cam1:AcquirePeriod 0.0
-caput DMSC:cam1:Acquire 1
-caput DMSC:KFK:Acquire 1
-caput DMSC:KFK_DRVR:AcquirePeriod 0
-caput DMSC:KFK_DRVR:Acquire 1
-caput DMSC:kafka1:Acquire 1
+caput DMSC:cam1:Acquire Acquire
+caput DMSC:KFK:Acquire Acquire

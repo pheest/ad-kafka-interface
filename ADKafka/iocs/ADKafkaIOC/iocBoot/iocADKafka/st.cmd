@@ -32,3 +32,9 @@ dbpf $(PREFIX):KFK_DRVR:ArrayCallbacks Enable
 # dbpf $(PREFIX):PVA:ArrayCallbacks Enable
 dbpf $(PREFIX):kafka1:EnableCallbacks Enable
 dbpf $(PREFIX):kafka1:ArrayCallbacks Enable
+
+# This isn't the aquire period - it is the acquire timeout.
+dbpf $(PREFIX):KFK_DRVR:AcquirePeriod 1.0
+
+dbpf $(PREFIX):KFK_DRVR:Acquire Acquire
+dbpf $(PREFIX):kafka1:Acquire Acquire

@@ -33,8 +33,8 @@ iocInit()
 
 dbpf $(PREFIX):KFK:EnableCallbacks Enable
 dbpf $(PREFIX):KFK:ArrayCallbacks Enable
-dbpf $(PREFIX):cam1:AcquirePeriod 0
 dbpf $(PREFIX):cam1:ArrayCallbacks Enable
 dbpf $(PREFIX):image1:EnableCallbacks Enable
 
-#Always end with a new line
+# NB, the frame rate is hardware-controlled. It makes no sense to set the period to anything other than 0.
+dbpf $(PREFIX):cam1:AcquirePeriod 0

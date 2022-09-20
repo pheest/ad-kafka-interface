@@ -59,8 +59,8 @@ if [ ! -f /etc/systemd/system/kafka.service ]; then
     echo WantedBy=multi-user.target >> /etc/systemd/system/kafka.service
     
     # Large request size is required for camera images.
-    echo max.request.size=10485760 >> /usr/local/kafka/config/producer.properties
-    sed -i "s/#batch.size=/batch.size==10485760/g" "/usr/local/kafka/config/producer.properties"
+    sed -i "s/#max.request.size=/max.request.size=10485760/g" >> /usr/local/kafka/config/producer.properties
+    sed -i "s/#batch.size=/batch.size=10485760/g" "/usr/local/kafka/config/producer.properties"
     
     # /tmp path is cleaned at system boot, so deleting file data.
     sed -i "s/log.dirs=\/tmp\/kafka-logs/log.dirs=\/usr\/local\/kafka\/tmp\/kafka-logs/g" "/usr/local/kafka/config/server.properties"

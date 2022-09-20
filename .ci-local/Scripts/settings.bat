@@ -5,9 +5,5 @@ REM caput -S DMSC:cam1:URL1 http://190.33.204.88:8888/nphMotionJpeg?Resolution=3
 REM caput -S DMSC:cam1:URL1 http://192.168.100.10/cgi-bin/mjpeg
 REM caput -S DMSC:cam1:URL1 http://192.168.100.10/cgi-bin/camera
 caput DMSC:cam1:URLSelect.ZRST Panasonic BL-VP101
-caput DMSC:cam1:AcquirePeriod 0.0
-caput DMSC:cam1:Acquire 1
-caput DMSC:KFK:Acquire 1
-caput DMSC:KFK_DRVR:AcquirePeriod 1.0
-caput DMSC:KFK_DRVR:Acquire 1
-caput DMSC:kafka1:Acquire 1
+caput DMSC:cam1:Acquire Acquire
+caput DMSC:KFK:Acquire Acquire
