@@ -62,4 +62,5 @@ void ParameterHandler::updateDbValue(ParameterBase *ParamPtr) {
        }},
   };
   CallMap.at(typeid(*ParamPtr).hash_code())();
+  Driver->callParamCallbacks();
 }

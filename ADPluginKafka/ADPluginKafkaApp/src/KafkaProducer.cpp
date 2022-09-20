@@ -171,6 +171,7 @@ bool KafkaProducer::SendKafkaPacket(const unsigned char *buffer,
       errorState = true;
       return false;
     }
+    MaxMessageSize.updateDbValue();
   }
   std::lock_guard<std::mutex> lock(brokerMutex);
   if (nullptr == Producer) {

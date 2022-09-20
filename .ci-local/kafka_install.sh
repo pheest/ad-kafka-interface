@@ -39,6 +39,7 @@ if [ ! -f /etc/systemd/system/zookeeper.service ]; then
     sed -i "s/dataDir=\/tmp\/zookeeper/dataDir=\/usr\/local\/kafka\/zookeeper-data/g" "/usr/local/kafka/config/zookeeper.properties"
 
     systemctl daemon-reload
+    systemctl enable zookeeper
     systemctl start zookeeper
 fi
 
@@ -69,6 +70,7 @@ if [ ! -f /etc/systemd/system/kafka.service ]; then
     sed -i "s/offset.storage.file.filename=\/tmp\/connect.offsets/offset.storage.file.filename=\/usr\/local\/kafka\/tmp\/connect.offsets/g" "/usr/local/kafka/config/connect-standalone.properties"
 
     systemctl daemon-reload
+    systemctl enable kafka
     systemctl start kafka
     pushd /usr/local/kafka
     bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 1 --topic url_data_topic --config max.message.bytes=10485760

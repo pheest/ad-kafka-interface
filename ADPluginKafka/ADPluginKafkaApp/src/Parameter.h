@@ -16,7 +16,7 @@ public:
   ParameterBase(std::string Name) : ParameterName(Name) {}
   virtual ~ParameterBase() = default;
   void registerRegistrar(ParameterHandler *Registrar);
-  std::string getParameterName() { return ParameterName; }
+  std::string const& getParameterName() const { return ParameterName; }
   virtual void updateDbValue();
 
 private:

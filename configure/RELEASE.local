@@ -24,8 +24,9 @@
 # Variables and paths to dependent modules:
 MODULES=\epics/support
 ASYN=$(MODULES)/asyn
-ADURL=$(MODULES)/areaDetector/ADURL
-ADCORE=$(MODULES)/areaDetector/ADCore
+AREA_DETECTOR := $(MODULES)/areaDetector
+ADURL=$(AREA_DETECTOR)/ADURL
+ADCORE=$(AREA_DETECTOR)/ADCore
 
 
 # EPICS_BASE should appear last so earlier modules can override stuff:
