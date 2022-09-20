@@ -151,7 +151,7 @@ void KafkaConsumer::event_cb(RdKafka::Event &event) {
   default:
     if ((event.type() == RdKafka::Event::EVENT_LOG) and
         (event.severity() <= RdKafka::Event::EVENT_SEVERITY_WARNING)) {
-        printf("Kafka error: %d\n", event.str());
+        printf("Kafka error: %s\n", event.str());
 
     } else {
         /// @todo Add message/log or something

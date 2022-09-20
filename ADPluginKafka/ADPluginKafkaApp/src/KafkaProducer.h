@@ -219,8 +219,8 @@ protected:
   size_t maxMessageSize{
       0}; /// @brief Default maximum message size in bytes.
   size_t maxMessageBufferSizeKb{
-      2500000};      /// @brief Message buffer size in kilo bytes.
-  int msgQueueSize{200}; /// @brief Stored maximum Kafka producer queue length.
+      0};      /// @brief Message buffer size in kilo bytes.
+  int msgQueueSize{0}; /// @brief Stored maximum Kafka producer queue length.
 
   /** @brief Callback member function used by the status and error handling
    * system of librdkafka.
