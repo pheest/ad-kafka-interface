@@ -217,10 +217,10 @@ protected:
       500}; /// @brief What is the timeout of the flush attempt?
 
   size_t maxMessageSize{
-      0}; /// @brief Default maximum message size in bytes.
+      0 }; /// @brief Default maximum message size in bytes.
   size_t maxMessageBufferSizeKb{
-      0};      /// @brief Message buffer size in kilo bytes.
-  int msgQueueSize{0}; /// @brief Stored maximum Kafka producer queue length.
+      10240 };      /// @brief Message buffer size in kilo bytes. 10 MB binary
+  int msgQueueSize{10}; /// @brief Stored maximum Kafka producer queue length.
 
   /** @brief Callback member function used by the status and error handling
    * system of librdkafka.

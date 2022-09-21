@@ -112,25 +112,20 @@ bool KafkaProducer::SetMessageBufferSizeKbytes(size_t msgBufferSize) {
 }
 
 size_t KafkaProducer::GetMessageBufferSizeKbytes() {
-  if (maxMessageBufferSizeKb == 0) {
-      std::string maxMessageBufferSizeStr;
-      conf->get("queue.buffering.max.kbytes", maxMessageBufferSizeStr);
-      if (maxMessageBufferSizeStr.size() > 0)
-          maxMessageBufferSizeKb = std::atoi(maxMessageBufferSizeStr.c_str());
-  }
+   std::string maxMessageBufferSizeStr;
+   conf->get("queue.buffering.max.kbytes", maxMessageBufferSizeStr);
+   if (maxMessageBufferSizeStr.size() > 0)
+     maxMessageBufferSizeKb = std::atoi(maxMessageBufferSizeStr.c_str());
   return maxMessageBufferSizeKb;
 }
 
 size_t KafkaProducer::GetMaxMessageSize() {
-    if (maxMessageSize == 0)
-    {
-        // This only needs to be read out on the first call.
-        std::string maxMessageSizeStr;
-        conf->get("message.max.bytes", maxMessageSizeStr);
-        if (maxMessageSizeStr.size() > 0)
-            maxMessageSize = std::atoi(maxMessageSizeStr.c_str()) - RD_KAFKAP_MESSAGE_V2_MAX_OVERHEAD;
-    }
-    return maxMessageSize;
+  // This only needs to be read out on the first call.
+  std::string maxMessageSizeStr, bufferMemory;
+  conf->get("message.max.bytes", maxMessageSizeStr);
+  if (maxMessageSizeStr.size() > 0)
+    maxMessageSize = std::atoi(maxMessageSizeStr.c_str()) - RD_KAFKAP_MESSAGE_V2_MAX_OVERHEAD;
+  return maxMessageSize;
 }
 
 bool KafkaProducer::SetMessageQueueLength(int queue) {
@@ -151,13 +146,11 @@ bool KafkaProducer::SetMessageQueueLength(int queue) {
 }
 
 int KafkaProducer::GetMessageQueueLength() {
-    if (msgQueueSize == 0) {
-        std::string msgQueueSizeStr;
-        conf->get("queue.buffering.max.messages", msgQueueSizeStr);
-        if (msgQueueSizeStr.size() > 0)
-            msgQueueSize = std::atoi(msgQueueSizeStr.c_str());
-    }
-    return msgQueueSize;
+  std::string msgQueueSizeStr;
+  conf->get("queue.buffering.max.messages", msgQueueSizeStr);
+  if (msgQueueSizeStr.size() > 0)
+    msgQueueSize = std::atoi(msgQueueSizeStr.c_str());
+  return msgQueueSize;
 }
 
 bool KafkaProducer::SendKafkaPacket(const unsigned char *buffer,
@@ -311,19 +304,14 @@ void KafkaProducer::InitRdKafka() {
                "Unable to set maximum buffer size.");
   }
 
+#if 0
   configResult =
-      conf->set("message.max.bytes", std::to_string(maxMessageSize), errstr);
+      conf->set("message.max.bytes", std::to_string(maxMessageSize + RD_KAFKAP_MESSAGE_V2_MAX_OVERHEAD), errstr);
   if (RdKafka::Conf::CONF_OK != configResult) {
     SetConStat(KafkaProducer::ConStat::ERROR,
                "Unable to set max message size.");
   }
-
-  configResult = conf->set("message.copy.max.bytes",
-                           std::to_string(maxMessageSize), errstr);
-  if (RdKafka::Conf::CONF_OK != configResult) {
-    SetConStat(KafkaProducer::ConStat::ERROR,
-               "Unable to set max (copy) message size.");
-  }
+#endif
 }
 
 bool KafkaProducer::SetStatsTimeMS(int time) {

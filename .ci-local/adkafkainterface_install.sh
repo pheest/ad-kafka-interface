@@ -18,7 +18,6 @@ apt-get install -y build-essential git python3 python-is-python3 curl p7zip-full
 #system required environment variables
 echo export PATH=$PATH:/builds/DATAnet/ad-kafka-interface/.cache/base-R7.0.6.1/bin/linux-x86_64 >> /etc/bash.bashrc
 echo export EPICS_CA_MAX_ARRAY_BYTES=20000000 >> /etc/bash.bashrc
-echo export PATH=$PATH:/builds/DATAnet/ad-kafka-interface/.cache/base/R7-0.6.1/bin/linux-x86_64 >> /etc/bash.bashrc
 
 #install ImageJ and ADViewers for visualtion.
 .ci-local/adviewers_install.sh > /tmp/adviewers_install.log 2>&1
