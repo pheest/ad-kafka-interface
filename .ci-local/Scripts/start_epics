@@ -1,0 +1,7 @@
+pushd /builds/DATAnet/ad-kafka-interface/ADPluginKafka/iocs/ADPluginKafkaIOC/iocBoot/iocADPluginKafka
+./start_epics &
+popd
+pushd /builds/DATAnet/ad-kafka-interface/ADKafka/iocs/ADKafkaIOC/iocBoot/iocADKafka
+./start_epics
+popd
+
