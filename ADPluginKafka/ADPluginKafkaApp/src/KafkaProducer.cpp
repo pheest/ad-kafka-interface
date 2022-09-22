@@ -65,10 +65,12 @@ bool KafkaProducer::StartThread() {
 
 void KafkaProducer::ThreadFunction() {
   while (runThread) {
-    std::this_thread::sleep_for(PollSleepTime);
     if (Producer != nullptr) {
-        // A producer has been allocated.
-        Producer->poll(0);
+      Producer->poll(PollSleepTime.count());
+    }
+    else {
+      // A producer has not been allocated.
+      std::this_thread::sleep_for(PollSleepTime);
     }
   }
 }
