@@ -68,7 +68,7 @@ void KafkaProducer::ThreadFunction() {
     auto startTime = std::chrono::steady_clock::now();
     if (Producer != nullptr)
     {
-      bool Locked = brokerMutex.try_lock_for(PollSleepTime);
+      bool Locked = brokerMutex.try_lock_for(std::chrono::milliseconds(PollSleepTime));
       if (Locked) {
         Producer->poll(0);
         brokerMutex.unlock();
