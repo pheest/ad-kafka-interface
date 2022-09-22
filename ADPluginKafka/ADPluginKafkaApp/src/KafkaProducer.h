@@ -278,7 +278,7 @@ protected:
   /// KafkaProducer::ThreadFunction().
   const std::chrono::milliseconds PollSleepTime{50};
 
-  mutable std::mutex
+  mutable std::timed_mutex
       brokerMutex; /// @brief Prevents access to shared resources.
 
   /** @brief Attempts to init the Kafka producer system of librdkafka.

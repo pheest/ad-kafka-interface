@@ -65,13 +65,19 @@ bool KafkaProducer::StartThread() {
 
 void KafkaProducer::ThreadFunction() {
   while (runThread) {
-    if (Producer != nullptr) {
-      Producer->poll(PollSleepTime.count());
+    auto startTime = std::chrono::steady_clock::now();
+    if (Producer != nullptr)
+    {
+      bool Locked = brokerMutex.try_lock_for(PollSleepTime);
+      if (Locked) {
+        Producer->poll(0);
+        brokerMutex.unlock();
+      }
     }
-    else {
-      // A producer has not been allocated.
-      std::this_thread::sleep_for(PollSleepTime);
-    }
+    auto endTime = std::chrono::steady_clock::now();
+    auto elapsed = std::chrono::duration<double, std::milli>(endTime - startTime);
+    if (PollSleepTime > elapsed)
+      std::this_thread::sleep_for(PollSleepTime - elapsed);
   }
 }
 
@@ -163,7 +169,7 @@ bool KafkaProducer::SendKafkaPacket(const unsigned char *buffer,
     }
     MaxMessageSize.updateDbValue();
   }
-  std::lock_guard<std::mutex> lock(brokerMutex);
+  std::lock_guard<std::timed_mutex> lock(brokerMutex);
   if (nullptr == Producer) {
     return false;
   }
@@ -361,7 +367,7 @@ std::string KafkaProducer::GetBrokerAddr() { return BrokerAddr; }
 bool KafkaProducer::MakeConnection() {
   // Do we know for sure that all possible paths will work? No!
   // This code could probably be improved somewhat.
-  std::lock_guard<std::mutex> lock(brokerMutex);
+  std::lock_guard<std::timed_mutex> lock(brokerMutex);
   if (not BrokerAddr.empty()) {
     Producer.reset(RdKafka::Producer::create(conf.get(), errstr));
     if (nullptr == Producer) {
