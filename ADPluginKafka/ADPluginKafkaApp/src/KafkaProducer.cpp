@@ -64,16 +64,15 @@ bool KafkaProducer::StartThread() {
 }
 
 void KafkaProducer::ThreadFunction() {
-  // Uses std::this_thread::sleep_for() as it can not know if a producer has
-  // been allocated.
   while (runThread) {
-    std::this_thread::sleep_for(PollSleepTime);
-    {
-      std::lock_guard<std::mutex> lock(brokerMutex);
-      if (Producer != nullptr) {
-        Producer->poll(0);
-      }
-    }
+	std::lock_guard<std::mutex> lock(brokerMutex);
+	if (Producer != nullptr) {
+	  Producer->poll(PollSleepTime.count());
+	}
+	else {
+	  // A producer has not been allocated.
+	  std::this_thread::sleep_for(PollSleepTime);
+	}
   }
 }
 
