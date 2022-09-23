@@ -68,7 +68,7 @@ void KafkaProducer::ThreadFunction() {
     auto startTime = std::chrono::steady_clock::now();
     if (Producer != nullptr)
     {
-      bool Locked = brokerMutex.try_lock_for(std::chrono::milliseconds(PollSleepTime));
+      bool Locked = brokerMutex.try_lock_for(PollSleepTime);
       if (Locked) {
         Producer->poll(0);
         brokerMutex.unlock();
@@ -85,12 +85,15 @@ bool KafkaProducer::SetMaxMessageSize(size_t msgSize) {
   if (errorState or 0 == msgSize) {
     return false;
   }
-  RdKafka::Conf::ConfResult configResult;
-  configResult =
+  RdKafka::Conf::ConfResult configResult1, configResult2;
+  configResult1 =
       conf->set("message.max.bytes", std::to_string(msgSize + RD_KAFKAP_MESSAGE_V2_MAX_OVERHEAD), errstr);
-  if (RdKafka::Conf::CONF_OK != configResult) {
-    SetConStat(KafkaProducer::ConStat::ERROR,
-               "Unable to set max message size.");
+  configResult2 =
+      conf->set("message.copy.max.bytes", std::to_string(msgSize + RD_KAFKAP_MESSAGE_V2_MAX_OVERHEAD), errstr);
+  if (RdKafka::Conf::CONF_OK != configResult1 or
+    RdKafka::Conf::CONF_OK != configResult2) {
+      SetConStat(KafkaProducer::ConStat::ERROR,
+        "Unable to set max message size.");
     return false;
   }
   maxMessageSize = msgSize;
@@ -177,7 +180,7 @@ bool KafkaProducer::SendKafkaPacket(const unsigned char *buffer,
                          Timestamp.time_since_epoch())
                          .count();
   RdKafka::ErrorCode resp = Producer->produce(
-      TopicName, -1, RdKafka::Producer::RK_MSG_BLOCK /* Not copy payload */,
+      TopicName, -1, RdKafka::Producer::RK_MSG_COPY /* Copy payload */,
       const_cast<unsigned char *>(buffer), buffer_size, nullptr, 0, MessageTime,
       nullptr);
 
@@ -307,14 +310,18 @@ void KafkaProducer::InitRdKafka() {
                "Unable to set maximum buffer size.");
   }
 
-#if 0
   configResult =
       conf->set("message.max.bytes", std::to_string(maxMessageSize + RD_KAFKAP_MESSAGE_V2_MAX_OVERHEAD), errstr);
   if (RdKafka::Conf::CONF_OK != configResult) {
-    SetConStat(KafkaProducer::ConStat::ERROR,
-               "Unable to set max message size.");
+      SetConStat(KafkaProducer::ConStat::ERROR,
+          "Unable to set max message size.");
   }
-#endif
+  configResult = conf->set("message.copy.max.bytes",
+                           std::to_string(maxMessageSize + RD_KAFKAP_MESSAGE_V2_MAX_OVERHEAD), errstr);
+  if (RdKafka::Conf::CONF_OK != configResult) {
+      SetConStat(KafkaProducer::ConStat::ERROR,
+          "Unable to set max (copy) message size.");
+  }
 }
 
 bool KafkaProducer::SetStatsTimeMS(int time) {
